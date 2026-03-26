@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Samuel Adefowope — Data Analyst & Web Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Lora:ital,wght@0,400;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0A0A0A;
+  --surface: #111111;
+  --surface2: #181818;
+  --gold: #D4A853;
+  --gold-light: #F0C97A;
+  --gold-dim: rgba(212,168,83,0.12);
+  --gold-border: rgba(212,168,83,0.22);
+  --white: #F5F1EB;
+  --muted: #7A7060;
+  --text: #C8BEAF;
+  --accent: #E8734A;
+
+  --nav-h: 72px;
+  --section-x: clamp(1.25rem, 5vw, 5rem);
+  --section-y: clamp(3.5rem, 8vw, 6.5rem);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Mono', monospace;
+  font-size: 14px;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* ── NOISE ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 9999; opacity: 0.3;
+}
+
+/* ── SKIP LINK (accessibility) ── */
+.skip-link {
+  position: absolute; top: -100px; left: 1rem;
+  background: var(--gold); color: #0A0A0A;
+  padding: 0.5rem 1rem; font-size: 0.75rem;
+  border-radius: 2px; z-index: 9999;
+  transition: top 0.2s;
+  font-family: 'Syne', sans-serif; font-weight: 700;
+}
+.skip-link:focus { top: 1rem; }
+
+/* ════════════════════════════════════
+   NAVBAR
+════════════════════════════════════ */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 500;
+  height: var(--nav-h);
+  padding: 0 var(--section-x);
+  display: flex; justify-content: space-between; align-items: center;
+  background: rgba(10,10,10,0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  transition: box-shadow 0.3s;
+}
+nav.scrolled { box-shadow: 0 4px 40px rgba(0,0,0,0.6); }
+
+.nav-logo img { width: 80px; height: 80px; object-fit: contain; display: block; }
+
+.nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+.nav-links a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  transition: color 0.25s;
+  position: relative;
+  padding-bottom: 2px;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 1px; background: var(--gold);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.25s ease;
+}
+.nav-links a:hover { color: var(--gold); }
+.nav-links a:hover::after { transform: scaleX(1); }
+.nav-links .cta-nav {
+  background: var(--gold); color: #0A0A0A !important;
+  padding: 0.45rem 1.1rem; border-radius: 2px;
+  font-weight: 700; font-family: 'Syne', sans-serif;
+}
+.nav-links .cta-nav::after { display: none; }
+.nav-links .cta-nav:hover { background: var(--gold-light); }
+
+/* Hamburger */
+.hamburger {
+  display: none;
+  flex-direction: column; gap: 5px;
+  cursor: pointer; padding: 6px;
+  background: none; border: none; outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.hamburger span {
+  display: block; width: 24px; height: 1.5px;
+  background: var(--text); border-radius: 2px;
+  transition: transform 0.35s ease, opacity 0.25s, width 0.25s;
+  transform-origin: center;
+}
+.hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; width: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+/* Mobile menu overlay */
+.mobile-menu {
+  display: none;
+  position: fixed;
+  top: var(--nav-h); left: 0; right: 0; bottom: 0;
+  background: rgba(10,10,10,0.97);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  z-index: 400;
+  padding: 3rem var(--section-x);
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.mobile-menu.open {
+  display: flex;
+  opacity: 1;
+  pointer-events: all;
+}
+.mobile-menu a {
+  color: var(--text);
+  text-decoration: none;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.6rem, 7vw, 2.8rem);
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  transition: color 0.2s;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  width: 100%;
+}
+.mobile-menu a:hover { color: var(--gold); }
+.mobile-menu a:last-child { border-bottom: none; }
+.mobile-menu-footer {
+  margin-top: auto;
+  font-size: 0.7rem;
+  color: var(--muted);
+  letter-spacing: 0.12em;
+}
+
+/* ════════════════════════════════════
+   HERO
+════════════════════════════════════ */
+#hero {
+  min-height: 100svh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: clamp(2rem, 5vw, 5rem);
+  padding: calc(var(--nav-h) + 3rem) var(--section-x) var(--section-y);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-grid-bg {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(212,168,83,0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(212,168,83,0.035) 1px, transparent 1px);
+  background-size: 55px 55px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 100%);
+}
+
+.hero-orb {
+  position: absolute;
+  width: 560px; height: 560px;
+  right: -80px; top: 50%; transform: translateY(-50%);
+  background: radial-gradient(circle, rgba(212,168,83,0.1) 0%, rgba(212,168,83,0.03) 40%, transparent 70%);
+  border-radius: 50%; filter: blur(50px);
+  animation: pulse 7s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes pulse {
+  0%,100% { opacity: 0.55; transform: translateY(-50%) scale(1); }
+  50%      { opacity: 1;    transform: translateY(-50%) scale(1.06); }
+}
+
+.hero-left { position: relative; z-index: 2; }
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  border: 1px solid var(--gold-border);
+  background: var(--gold-dim);
+  padding: 0.4rem 1rem;
+  border-radius: 2rem;
+  font-size: 0.67rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1.8rem;
+  animation: fadeUp 0.6s ease both;
+}
+.hero-badge::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%; background: var(--gold);
+  animation: blink 2s ease-in-out infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.25} }
+
+h1.hero-name {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: clamp(2.4rem, 5.5vw, 5rem);
+  line-height: 1.0;
+  color: var(--white);
+  margin-bottom: 0.6rem;
+  animation: fadeUp 0.7s 0.1s ease both;
+  letter-spacing: -0.02em;
+}
+h1.hero-name span { color: var(--gold); }
+
+.hero-role {
+  font-family: 'Lora', serif;
+  font-style: italic;
+  font-size: clamp(0.95rem, 2vw, 1.15rem);
+  color: var(--gold-light);
+  margin-bottom: 1.4rem;
+  animation: fadeUp 0.7s 0.2s ease both;
+}
+
+.hero-desc {
+  color: var(--muted);
+  max-width: 420px;
+  line-height: 1.9;
+  margin-bottom: 2.2rem;
+  animation: fadeUp 0.7s 0.3s ease both;
+  font-size: 0.82rem;
+}
+
+.hero-ctas {
+  display: flex; gap: 0.85rem; flex-wrap: wrap;
+  animation: fadeUp 0.7s 0.4s ease both;
+}
+
+.btn-primary {
+  background: var(--gold);
+  color: #0A0A0A;
+  padding: 0.8rem 1.7rem;
+  border-radius: 2px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background 0.25s, transform 0.2s, box-shadow 0.25s;
+  display: inline-block;
+}
+.btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(212,168,83,0.3); }
+
+.btn-outline {
+  border: 1px solid var(--gold-border);
+  color: var(--gold);
+  padding: 0.8rem 1.7rem;
+  border-radius: 2px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: border-color 0.25s, background 0.25s, transform 0.2s;
+  display: inline-block;
+}
+.btn-outline:hover { background: var(--gold-dim); border-color: var(--gold); transform: translateY(-2px); }
+
+.hero-right {
+  position: relative; z-index: 2;
+  display: flex; flex-direction: column; align-items: flex-end;
+}
+
+.stat-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--gold-border);
+  border: 1px solid var(--gold-border);
+  animation: fadeUp 0.8s 0.5s ease both;
+  width: 100%;
+  max-width: 380px;
+}
+
+.stat-card {
+  background: var(--surface);
+  padding: clamp(1.2rem, 3vw, 1.8rem) 1.5rem;
+  text-align: center;
+  transition: background 0.25s;
+}
+.stat-card:hover { background: var(--surface2); }
+
+.stat-num {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  color: var(--gold);
+  display: block;
+  line-height: 1;
+  margin-bottom: 0.4rem;
+}
+.stat-label {
+  font-size: 0.62rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ════════════════════════════════════
+   SECTION BASE
+════════════════════════════════════ */
+section {
+  padding: var(--section-y) var(--section-x);
+}
+
+.section-tag {
+  font-size: 0.66rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.75rem;
+  display: flex; align-items: center; gap: 0.75rem;
+}
+.section-tag::before { content:''; display:block; width:2rem; height:1px; background:var(--gold); }
+
+.section-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: clamp(1.7rem, 3.5vw, 2.8rem);
+  color: var(--white);
+  line-height: 1.12;
+  margin-bottom: clamp(2rem, 4vw, 3rem);
+  letter-spacing: -0.02em;
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ════════════════════════════════════
+   SKILLS
+════════════════════════════════════ */
+#skills { background: var(--surface); }
+
+.skills-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(2rem, 6vw, 4.5rem);
+}
+
+.skill-group-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1.4rem;
+  padding-bottom: 0.7rem;
+  border-bottom: 1px solid var(--gold-border);
+}
+
+.skill-bar-row { margin-bottom: 1.1rem; }
+
+.skill-bar-header {
+  display: flex; justify-content: space-between;
+  margin-bottom: 0.4rem;
+}
+.skill-name { font-size: 0.76rem; color: var(--text); }
+.skill-pct  { font-size: 0.68rem; color: var(--gold); }
+
+.skill-track {
+  height: 2px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 2px; overflow: hidden;
+}
+.skill-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold), var(--gold-light));
+  border-radius: 2px; width: 0;
+  transition: width 1.3s cubic-bezier(0.4,0,0.2,1);
+}
+
+.tag-cloud { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-top: 0.8rem; }
+.tag {
+  border: 1px solid var(--gold-border);
+  color: var(--muted);
+  padding: 0.28rem 0.75rem;
+  border-radius: 2px;
+  font-size: 0.68rem;
+  letter-spacing: 0.07em;
+  transition: all 0.22s;
+  cursor: default;
+}
+.tag:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+
+/* ════════════════════════════════════
+   PROJECTS
+════════════════════════════════════ */
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+.project-card {
+  background: var(--surface);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 2px;
+  overflow: hidden;
+  transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+  display: flex; flex-direction: column;
+}
+.project-card:hover {
+  transform: translateY(-7px);
+  border-color: var(--gold-border);
+  box-shadow: 0 24px 55px rgba(0,0,0,0.55), 0 0 36px rgba(212,168,83,0.07);
+}
+
+.project-thumb {
+  height: 190px;
+  overflow: hidden;
+  position: relative;
+}
+.project-thumb img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  filter: brightness(0.75);
+  transition: transform 0.5s ease, filter 0.4s ease;
+  display: block;
+}
+.project-card:hover .project-thumb img {
+  transform: scale(1.04);
+  filter: brightness(0.85);
+}
+
+.project-body { padding: clamp(1.2rem, 3vw, 1.8rem); flex: 1; display: flex; flex-direction: column; }
+
+.project-type {
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.5rem;
+}
+.project-name {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--white);
+  margin-bottom: 0.7rem;
+  line-height: 1.3;
+}
+.project-desc {
+  color: var(--muted);
+  font-size: 0.76rem;
+  line-height: 1.8;
+  margin-bottom: 1.1rem;
+  flex: 1;
+}
+.project-tech { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 1.2rem; }
+.tech-tag {
+  background: rgba(212,168,83,0.07);
+  border: 1px solid rgba(212,168,83,0.18);
+  color: var(--gold);
+  font-size: 0.62rem;
+  padding: 0.18rem 0.55rem;
+  border-radius: 2px;
+  letter-spacing: 0.04em;
+}
+.project-link {
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  text-decoration: none;
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  transition: gap 0.2s, opacity 0.2s;
+  margin-top: auto;
+}
+.project-link:hover { gap: 0.7rem; }
+
+/* ════════════════════════════════════
+   EXPERIENCE
+════════════════════════════════════ */
+#experience { background: var(--surface); }
+
+.timeline { position: relative; padding-left: 1.5rem; }
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0.5rem; bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, var(--gold) 0%, rgba(212,168,83,0.15) 70%, transparent 100%);
+}
+
+.tl-item {
+  position: relative;
+  margin-bottom: 2.8rem;
+  padding-left: 2rem;
+}
+.tl-item:last-child { margin-bottom: 0; }
+
+.tl-item::before {
+  content: '';
+  position: absolute;
+  left: -1.5rem; top: 0.45rem;
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: var(--gold);
+  border: 2px solid var(--surface);
+  box-shadow: 0 0 0 3px rgba(212,168,83,0.18);
+}
+
+.tl-period {
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  color: var(--gold);
+  margin-bottom: 0.25rem;
+  font-style: italic;
+}
+.tl-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--white);
+  margin-bottom: 0.15rem;
+  line-height: 1.4;
+}
+.tl-company {
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-bottom: 0.75rem;
+}
+.tl-remote {
+  display: inline-block;
+  background: rgba(232,115,74,0.1);
+  border: 1px solid rgba(232,115,74,0.28);
+  color: var(--accent);
+  font-size: 0.58rem;
+  padding: 0.12rem 0.5rem;
+  border-radius: 2px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+  font-family: 'DM Mono', monospace;
+}
+.tl-bullets { list-style: none; }
+.tl-bullets li {
+  font-size: 0.77rem;
+  color: var(--muted);
+  padding: 0.18rem 0 0.18rem 1.2rem;
+  position: relative;
+  line-height: 1.75;
+}
+.tl-bullets li::before {
+  content: '›'; position: absolute; left: 0;
+  color: var(--gold); font-size: 0.9rem;
+}
+
+/* ════════════════════════════════════
+   ABOUT
+════════════════════════════════════ */
+.about-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: clamp(2.5rem, 6vw, 5rem);
+  align-items: start;
+}
+
+.about-card {
+  background: var(--surface);
+  border: 1px solid var(--gold-border);
+  padding: clamp(1.8rem, 4vw, 2.8rem);
+  position: relative;
+}
+.about-card::before {
+  content: '"';
+  position: absolute;
+  top: -1.4rem; left: 1.8rem;
+  font-family: 'Lora', serif;
+  font-size: 5.5rem;
+  color: var(--gold);
+  line-height: 1; opacity: 0.35;
+}
+.about-quote {
+  font-family: 'Lora', serif;
+  font-style: italic;
+  font-size: clamp(0.92rem, 2vw, 1.05rem);
+  color: var(--white);
+  line-height: 1.75;
+  margin-bottom: 1.5rem;
+}
+.about-meta {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+.meta-key {
+  font-size: 0.62rem; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--gold); margin-bottom: 0.2rem;
+}
+.meta-val { font-size: 0.8rem; color: var(--text); }
+
+.about-text p {
+  color: var(--muted); line-height: 1.9;
+  margin-bottom: 1.2rem; font-size: 0.8rem;
+}
+.about-text strong { color: var(--text); font-weight: normal; }
+
+.cert-list { margin-top: 1.8rem; }
+.cert-item {
+  display: flex; align-items: flex-start; gap: 0.9rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.cert-item:last-child { border-bottom: none; }
+.cert-icon { color: var(--gold); font-size: 0.95rem; flex-shrink: 0; margin-top: 0.1rem; }
+.cert-name { font-size: 0.78rem; color: var(--white); margin-bottom: 0.12rem; }
+.cert-issuer { font-size: 0.68rem; color: var(--muted); }
+
+/* ════════════════════════════════════
+   CONTACT
+════════════════════════════════════ */
+#contact {
+  background: var(--surface);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+#contact::before {
+  content: '';
+  position: absolute;
+  bottom: -200px; left: 50%; transform: translateX(-50%);
+  width: 700px; height: 400px;
+  background: radial-gradient(ellipse, rgba(212,168,83,0.07) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.contact-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: clamp(2.2rem, 6vw, 4.5rem);
+  color: var(--white);
+  line-height: 1.08;
+  margin-bottom: 1.2rem;
+  letter-spacing: -0.02em;
+}
+.contact-title span { color: var(--gold); }
+
+.contact-sub {
+  color: var(--muted); font-size: 0.82rem;
+  max-width: 460px; margin: 0 auto 2.2rem;
+  line-height: 1.85;
+}
+
+.contact-links {
+  display: flex; justify-content: center;
+  gap: 1rem; flex-wrap: wrap;
+  margin-bottom: 2.5rem;
+}
+.contact-pill {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  border: 1px solid var(--gold-border);
+  color: var(--gold);
+  padding: 0.65rem 1.3rem;
+  border-radius: 2rem;
+  font-size: 0.75rem;
+  text-decoration: none;
+  transition: all 0.25s;
+  background: transparent;
+}
+.contact-pill:hover { background: var(--gold-dim); transform: translateY(-2px); border-color: var(--gold); }
+
+/* ════════════════════════════════════
+   FOOTER
+════════════════════════════════════ */
+footer {
+  padding: 1.8rem var(--section-x);
+  display: flex; justify-content: space-between; align-items: center;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  flex-wrap: wrap; gap: 0.75rem;
+}
+.footer-logo {
+  display: flex; align-items: center; gap: 0.8rem;
+}
+.footer-logo img { width: 40px; height: 40px; object-fit: contain; }
+.footer-name {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700; color: var(--gold); font-size: 0.82rem;
+}
+.footer-copy { font-size: 0.68rem; color: var(--muted); }
+.footer-back {
+  font-size: 0.68rem; color: var(--muted);
+  text-decoration: none;
+  letter-spacing: 0.1em;
+  transition: color 0.2s;
+}
+.footer-back:hover { color: var(--gold); }
+
+/* ════════════════════════════════════
+   DIVIDER
+════════════════════════════════════ */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold-border), transparent);
+  margin: 0 var(--section-x);
+}
+
+/* ════════════════════════════════════
+   SCROLL TO TOP
+════════════════════════════════════ */
+.scroll-top {
+  position: fixed; bottom: 1.5rem; right: 1.5rem;
+  width: 42px; height: 42px;
+  background: var(--surface);
+  border: 1px solid var(--gold-border);
+  color: var(--gold);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; border-radius: 2px;
+  z-index: 300;
+  font-size: 1rem;
+  transition: all 0.25s;
+  opacity: 0; pointer-events: none;
+  transform: translateY(10px);
+}
+.scroll-top.visible { opacity: 1; pointer-events: all; transform: translateY(0); }
+.scroll-top:hover { background: var(--gold-dim); border-color: var(--gold); }
+
+/* ════════════════════════════════════
+   RESPONSIVE — TABLET  ≤ 900px
+════════════════════════════════════ */
+@media (max-width: 900px) {
+
+  /* Nav */
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+
+  /* Hero */
+  #hero {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    min-height: auto;
+    padding-top: calc(var(--nav-h) + 2.5rem);
+    padding-bottom: var(--section-y);
+  }
+  .hero-right { align-items: flex-start; }
+  .hero-orb { display: none; }
+  .stat-grid { max-width: 100%; }
+
+  /* Skills */
+  .skills-layout { grid-template-columns: 1fr; gap: 2.5rem; }
+
+  /* Projects */
+  .projects-grid { grid-template-columns: 1fr 1fr; }
+
+  /* About */
+  .about-layout { grid-template-columns: 1fr; gap: 2.5rem; }
+}
+
+/* ════════════════════════════════════
+   RESPONSIVE — MOBILE  ≤ 580px
+════════════════════════════════════ */
+@media (max-width: 580px) {
+  :root { --section-x: 1.1rem; }
+
+  /* Hero */
+  .hero-badge { font-size: 0.6rem; padding: 0.35rem 0.85rem; }
+  h1.hero-name { font-size: clamp(2rem, 10vw, 2.8rem); }
+  .hero-ctas { gap: 0.7rem; }
+  .btn-primary, .btn-outline {
+    padding: 0.75rem 1.35rem;
+    font-size: 0.72rem;
+    width: 100%; text-align: center;
+  }
+
+  /* Stats: 2 col stays but smaller */
+  .stat-card { padding: 1.2rem 1rem; }
+  .stat-num { font-size: 1.7rem; }
+
+  /* Projects: single col */
+  .projects-grid { grid-template-columns: 1fr; }
+
+  /* About meta: single col */
+  .about-meta { grid-template-columns: 1fr; gap: 0.9rem; }
+
+  /* Contact pills: stacked */
+  .contact-links { flex-direction: column; align-items: center; }
+  .contact-pill { width: 100%; max-width: 340px; justify-content: center; }
+  .btn-primary.contact-cta { width: 100%; max-width: 340px; text-align: center; }
+
+  /* Footer */
+  footer { flex-direction: column; text-align: center; }
+
+  /* Section title smaller */
+  .section-title { font-size: clamp(1.5rem, 7vw, 2rem); }
+}
+
+/* ════════════════════════════════════
+   FOCUS STYLES (a11y)
+════════════════════════════════════ */
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+</style>
+</head>
+<body>
+
+<a href="#hero" class="skip-link">Skip to content</a>
+
+<!-- ── NAVBAR ── -->
+<nav id="main-nav" role="navigation" aria-label="Main navigation">
+  <div class="nav-logo">
+    <a href="#hero" aria-label="Home"><img src="images/Logo.png" alt="Samuel Adefowope logo"></a>
+  </div>
+  <ul class="nav-links" role="list">
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact" class="cta-nav">Hire Me</a></li>
+  </ul>
+  <button class="hamburger" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobile-menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Mobile menu -->
+<nav id="mobile-menu" class="mobile-menu" aria-label="Mobile navigation">
+  <a href="#skills">Skills</a>
+  <a href="#projects">Projects</a>
+  <a href="#experience">Experience</a>
+  <a href="#about">About</a>
+  <a href="#contact">Contact</a>
+  <p class="mobile-menu-footer">Available for Remote Work · Nigeria</p>
+</nav>
+
+<!-- ── HERO ── -->
+<section id="hero" aria-label="Hero">
+  <div class="hero-grid-bg" aria-hidden="true"></div>
+  <div class="hero-orb" aria-hidden="true"></div>
+
+  <div class="hero-left">
+    <div class="hero-badge" role="status">🌍 Available for Remote Work</div>
+    <h1 class="hero-name">Samuel<br><span>Adefowope</span></h1>
+    <p class="hero-role">Data Analyst &amp; Front-End Web Developer</p>
+    <p class="hero-desc">I transform raw data into clear insights and build fast, responsive websites that work for real people. Based in Nigeria — delivering for clients worldwide.</p>
+    <div class="hero-ctas">
+      <a href="#projects" class="btn-primary">View My Work</a>
+      <a href="#contact" class="btn-outline">Let's Talk</a>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="stat-grid" role="list" aria-label="Key statistics">
+      <div class="stat-card" role="listitem">
+        <span class="stat-num">7+</span>
+        <span class="stat-label">Years Experience</span>
+      </div>
+      <div class="stat-card" role="listitem">
+        <span class="stat-num">3+</span>
+        <span class="stat-label">Live Projects</span>
+      </div>
+      <div class="stat-card" role="listitem">
+        <span class="stat-num">4+</span>
+        <span class="stat-label">Industries Served</span>
+      </div>
+      <div class="stat-card" role="listitem">
+        <span class="stat-num">100%</span>
+        <span class="stat-label">Remote-Ready</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider" aria-hidden="true"></div>
+
+<!-- ── SKILLS ── -->
+<section id="skills" aria-labelledby="skills-heading">
+  <div class="section-tag reveal" aria-hidden="true">Expertise</div>
+  <h2 class="section-title reveal" id="skills-heading">What I bring<br>to the table</h2>
+
+  <div class="skills-layout">
+    <div class="reveal">
+      <div class="skill-group-title">Data &amp; Analytics</div>
+      <div class="skill-bar-row">
+        <div class="skill-bar-header"><span class="skill-name">Microsoft Excel</span><span class="skill-pct">95%</span></div>
+        <div class="skill-track" role="progressbar" aria-valuenow="95" aria-valuemin="0" aria-valuemax="100" aria-label="Microsoft Excel proficiency"><div class="skill-fill" data-width="95"></div></div>
+      </div>
+      <div class="skill-bar-row">
+        <div class="skill-bar-header"><span class="skill-name">Power BI</span><span class="skill-pct">85%</span></div>
+        <div class="skill-track" role="progressbar" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" aria-label="Power BI proficiency"><div class="skill-fill" data-width="85"></div></div>
+      </div>
+      <div class="skill-bar-row">
+        <div class="skill-bar-header"><span class="skill-name">Tableau</span><span class="skill-pct">80%</span></div>
+        <div class="skill-track" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" aria-label="Tableau proficiency"><div class="skill-fill" data-width="80"></div></div>
+      </div>
+      <div class="skill-bar-row">
+        <div class="skill-bar-header"><span class="skill-name">SPSS</span><span class="skill-pct">85%</span></div>
+        <div class="skill-track" role="progressbar" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" aria-label="SPSS proficiency"><div class="skill-fill" data-width="85"></div></div>
+      </div>
+      <div class="skill-bar-row">
+        <div class="skill-bar-header"><span class="skill-name">SQL &amp; Data Cleaning</span><span class="skill-pct">75%</span></div>
+        <div class="skill-track" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" aria-label="SQL proficiency"><div class="skill-fill" data-width="75"></div></div>
+      </div>
+
+      <div class="skill-group-title" style="margin-top:2rem">Design</div>
+      <div class="tag-cloud" role="list">
+        <span class="tag" role="listitem">Figma</span>
+        <span class="tag" role="listitem">Adobe XD</span>
+        <span class="tag" role="listitem">UI / UX</span>
+        <span class="tag" role="listitem">Graphic Design</span>
+        <span class="tag" role="listitem">Desktop Publishing</span>
+        <span class="tag" role="listitem">Branding</span>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <div class="skill-group-title">Web Development</div>
+      <div class="skill-bar-row">
+        <div class="skill-bar-header"><span class="skill-name">HTML5 / CSS3</span><span class="skill-pct">92%</span></div>
+        <div class="skill-track" role="progressbar" aria-valuenow="92" aria-valuemin="0" aria-valuemax="100" aria-label="HTML/CSS proficiency"><div class="skill-fill" data-width="92"></div></div>
+      </div>
+      <div class="skill-bar-row">
+        <div class="skill-bar-header"><span class="skill-name">JavaScript</span><span class="skill-pct">78%</span></div>
+        <div class="skill-track" role="progressbar" aria-valuenow="78" aria-valuemin="0" aria-valuemax="100" aria-label="JavaScript proficiency"><div class="skill-fill" data-width="78"></div></div>
+      </div>
+      <div class="skill-bar-row">
+        <div class="skill-bar-header"><span class="skill-name">Bootstrap</span><span class="skill-pct">88%</span></div>
+        <div class="skill-track" role="progressbar" aria-valuenow="88" aria-valuemin="0" aria-valuemax="100" aria-label="Bootstrap proficiency"><div class="skill-fill" data-width="88"></div></div>
+      </div>
+      <div class="skill-bar-row">
+        <div class="skill-bar-header"><span class="skill-name">Responsive Design / SEO</span><span class="skill-pct">85%</span></div>
+        <div class="skill-track" role="progressbar" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" aria-label="Responsive Design proficiency"><div class="skill-fill" data-width="85"></div></div>
+      </div>
+      <div class="skill-bar-row">
+        <div class="skill-bar-header"><span class="skill-name">APIs &amp; Integrations</span><span class="skill-pct">72%</span></div>
+        <div class="skill-track" role="progressbar" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100" aria-label="APIs proficiency"><div class="skill-fill" data-width="72"></div></div>
+      </div>
+
+      <div class="skill-group-title" style="margin-top:2rem">DevOps &amp; Tools</div>
+      <div class="tag-cloud" role="list">
+        <span class="tag" role="listitem">Website Hosting</span>
+        <span class="tag" role="listitem">SSL / Security</span>
+        <span class="tag" role="listitem">Domain Management</span>
+        <span class="tag" role="listitem">Google Maps API</span>
+        <span class="tag" role="listitem">Email Automation</span>
+        <span class="tag" role="listitem">IT Support</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider" aria-hidden="true"></div>
+
+<!-- ── PROJECTS ── -->
+<section id="projects" aria-labelledby="projects-heading">
+  <div class="section-tag reveal" aria-hidden="true">Portfolio</div>
+  <h2 class="section-title reveal" id="projects-heading">Websites I've built</h2>
+
+  <div class="projects-grid">
+
+    <article class="project-card reveal">
+      <div class="project-thumb">
+        <img src="images/All Family Child Care.png" alt="All Family Childcare website screenshot" loading="lazy">
+      </div>
+      <div class="project-body">
+        <div class="project-type">Business Website</div>
+        <h3 class="project-name">All Family Childcare Project</h3>
+        <p class="project-desc">A fully responsive website for a childcare service provider. Mobile-first layouts, service pages, and intuitive contact forms designed to build trust with families.</p>
+        <div class="project-tech">
+          <span class="tech-tag">HTML5</span>
+          <span class="tech-tag">CSS3</span>
+          <span class="tech-tag">JavaScript</span>
+          <span class="tech-tag">Bootstrap</span>
+        </div>
+        <a href="https://allfamilychildcare.com" class="project-link" target="_blank" rel="noopener noreferrer" aria-label="View All Family Childcare project (opens in new tab)">View Project →</a>
+      </div>
+    </article>
+
+    <article class="project-card reveal">
+      <div class="project-thumb">
+        <img src="images/urban oasis Landing Page.png" alt="Urban Oasis Apartment website screenshot" loading="lazy">
+      </div>
+      <div class="project-body">
+        <div class="project-type">Real Estate Website</div>
+        <h3 class="project-name">Urban Oasis Apartment</h3>
+        <p class="project-desc">A modern property listing and booking-enquiry platform. Google Maps API integration, automated email forms, SEO optimization, and cross-browser compatibility.</p>
+        <div class="project-tech">
+          <span class="tech-tag">HTML5</span>
+          <span class="tech-tag">CSS3</span>
+          <span class="tech-tag">JavaScript</span>
+          <span class="tech-tag">Google Maps API</span>
+        </div>
+        <a href="https://github.com/samtem08/urbanoasisapartment.git" class="project-link" target="_blank" rel="noopener noreferrer" aria-label="View Urban Oasis project on GitHub (opens in new tab)">View Project →</a>
+      </div>
+    </article>
+
+    <article class="project-card reveal">
+      <div class="project-thumb">
+        <img src="images/Ad-Noy.png" alt="Ad-Noy Nigeria Ltd website screenshot" loading="lazy">
+      </div>
+      <div class="project-body">
+        <div class="project-type">Corporate Website</div>
+        <h3 class="project-name">Ad-Noy Nigeria Ltd.</h3>
+        <p class="project-desc">Corporate website for a building construction firm. SSL-secured, deployed to live server, with optimized performance, project showcases, and full maintenance setup.</p>
+        <div class="project-tech">
+          <span class="tech-tag">HTML5</span>
+          <span class="tech-tag">CSS3</span>
+          <span class="tech-tag">Bootstrap</span>
+          <span class="tech-tag">SSL / Security</span>
+        </div>
+        <a href="https://adnoynigltd.com" class="project-link" target="_blank" rel="noopener noreferrer" aria-label="View Ad-Noy Nigeria project (opens in new tab)">View Project →</a>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<div class="section-divider" aria-hidden="true"></div>
+
+<!-- ── EXPERIENCE ── -->
+<section id="experience" aria-labelledby="exp-heading">
+  <div class="section-tag reveal" aria-hidden="true">Work History</div>
+  <h2 class="section-title reveal" id="exp-heading">Experience</h2>
+
+  <div class="timeline">
+
+    <div class="tl-item reveal">
+      <div class="tl-period">Aug 2025 – Present</div>
+      <div class="tl-title">Data Analyst · Manager · Web &amp; Graphic Designer <span class="tl-remote">On-site</span></div>
+      <div class="tl-company">Better Life Global Services — Ado-Ekiti, Nigeria</div>
+      <ul class="tl-bullets">
+        <li>Collect and analyze data from databases, surveys, APIs, and spreadsheets to drive decisions.</li>
+        <li>Build interactive dashboards using Excel, SPSS, Power BI, and Tableau.</li>
+        <li>Translate Figma/Adobe XD designs into responsive web interfaces.</li>
+        <li>Produce branding and marketing visual assets for organizational campaigns.</li>
+      </ul>
+    </div>
+
+    <div class="tl-item reveal">
+      <div class="tl-period">Jul 2025 – Sep 2025</div>
+      <div class="tl-title">Web Developer <span class="tl-remote">Fully Remote</span></div>
+      <div class="tl-company">JBrown LLC — Remote (USA Client)</div>
+      <ul class="tl-bullets">
+        <li>Designed and maintained websites for a US-based client entirely remotely.</li>
+        <li>Integrated Google Maps API, contact forms, and email automation.</li>
+        <li>Managed hosting, deployments, and backups on agreed delivery schedules.</li>
+      </ul>
+    </div>
+
+    <div class="tl-item reveal">
+      <div class="tl-period">Apr 2025 – Sep 2025</div>
+      <div class="tl-title">Web Developer <span class="tl-remote">Contract</span></div>
+      <div class="tl-company">Ad-Noy Nigeria Limited — Nigeria</div>
+      <ul class="tl-bullets">
+        <li>Built responsive websites with HTML, CSS, JavaScript, and Bootstrap.</li>
+        <li>Deployed to live servers with SSL, performance optimization, and SEO.</li>
+      </ul>
+    </div>
+
+    <div class="tl-item reveal">
+      <div class="tl-period">Nov 2017 – Dec 2018</div>
+      <div class="tl-title">Instructor · Examination Officer · Database Manager</div>
+      <div class="tl-company">Air Force Primary School (NYSC) — Benin City</div>
+      <ul class="tl-bullets">
+        <li>Maintained student academic databases and compiled performance reports.</li>
+        <li>Delivered Mathematics lessons and academic support for underperforming students.</li>
+      </ul>
+    </div>
+
+    <div class="tl-item reveal">
+      <div class="tl-period">Jun 2008 – Dec 2012</div>
+      <div class="tl-title">Manager / Systems Engineer</div>
+      <div class="tl-company">Abidak Cyber Café — Nigeria</div>
+      <ul class="tl-bullets">
+        <li>Managed daily IT operations for a busy public-access computer facility.</li>
+        <li>Diagnosed and resolved hardware, software, and network issues at high availability.</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<div class="section-divider" aria-hidden="true"></div>
+
+<!-- ── ABOUT ── -->
+<section id="about" aria-labelledby="about-heading">
+  <div class="section-tag reveal" aria-hidden="true">Background</div>
+  <h2 class="section-title reveal" id="about-heading">About me</h2>
+
+  <div class="about-layout">
+    <div class="about-visual reveal">
+      <div class="about-card">
+        <p class="about-quote">I believe data tells a story, and every website should tell it clearly — I build both.</p>
+        <div class="about-meta">
+          <div class="meta-item">
+            <div class="meta-key">Location</div>
+            <div class="meta-val">Ado-Ekiti, Nigeria</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-key">Availability</div>
+            <div class="meta-val">Immediate</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-key">Education</div>
+            <div class="meta-val">B.Sc. Statistics</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-key">Work Mode</div>
+            <div class="meta-val">Remote / Contract</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="about-text reveal">
+      <p>I hold a <strong>B.Sc. in Statistics</strong> from Ekiti State University and have spent over seven years working at the intersection of data and digital communication — first running a computer facility, then teaching, then building websites and dashboards for growing businesses.</p>
+      <p>I've delivered websites for clients in <strong>Nigeria and the USA</strong>, working fully remotely for JBrown LLC. I understand how to communicate across time zones, manage my own workload, and deliver without hand-holding.</p>
+      <p>Outside of client work I'm invested in <strong>data visualization</strong>, creative design, and continuously sharpening my analytical skills. I'm looking for a remote role where I can contribute meaningfully from day one.</p>
+
+      <div class="cert-list">
+        <div class="cert-item">
+          <span class="cert-icon" aria-hidden="true">🎓</span>
+          <div>
+            <div class="cert-name">Certificate in Data Analysis</div>
+            <div class="cert-issuer">Coursera</div>
+          </div>
+        </div>
+        <div class="cert-item">
+          <span class="cert-icon" aria-hidden="true">🎓</span>
+          <div>
+            <div class="cert-name">Desktop Publishing, Networking, Graphic Design &amp; Internet Operations</div>
+            <div class="cert-issuer">Cheybis Computer Institute of Management, Abuja</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider" aria-hidden="true"></div>
+
+<!-- ── CONTACT ── -->
+<section id="contact" aria-labelledby="contact-heading">
+  <h2 class="contact-title reveal" id="contact-heading">Let's build<br><span>something</span></h2>
+  <p class="contact-sub reveal">I'm open to remote full-time roles, freelance contracts, and data/web projects worldwide. Reach out and let's talk.</p>
+
+  <div class="contact-links reveal">
+    <a href="mailto:samueladefowope1@gmail.com" class="contact-pill">
+      ✉️ samueladefowope1@gmail.com
+    </a>
+    <a href="tel:+2348034549951" class="contact-pill">
+      📞 +234 803 454 9951
+    </a>
+    <span class="contact-pill">
+      🌍 Open to Remote Worldwide
+    </span>
+  </div>
+
+  <a href="mailto:samueladefowope1@gmail.com" class="btn-primary contact-cta">Start a Conversation</a>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-logo">
+    <img src="images/Logo.png" alt="Samuel Adefowope logo">
+    <span class="footer-name">Samuel Adefowope</span>
+  </div>
+  <span class="footer-copy">© 2025 · Data Analyst · Web Developer · Nigeria</span>
+  <a href="#hero" class="footer-back" aria-label="Back to top">↑ Back to top</a>
+</footer>
+
+<!-- Scroll-to-top button -->
+<button class="scroll-top" id="scrollTop" aria-label="Scroll to top">↑</button>
+
+<script>
+/* ─── Navbar shadow on scroll ─── */
+const nav = document.getElementById('main-nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 40);
+  // scroll-to-top
+  document.getElementById('scrollTop').classList.toggle('visible', window.scrollY > 400);
+}, { passive: true });
+
+/* ─── Hamburger / mobile menu ─── */
+const hamburger = document.querySelector('.hamburger');
+const mobileMenu = document.getElementById('mobile-menu');
+
+hamburger.addEventListener('click', () => {
+  const isOpen = mobileMenu.classList.toggle('open');
+  hamburger.classList.toggle('open', isOpen);
+  hamburger.setAttribute('aria-expanded', isOpen);
+  document.body.style.overflow = isOpen ? 'hidden' : '';
+});
+
+// Close on link click
+mobileMenu.querySelectorAll('a').forEach(link => {
+  link.addEventListener('click', () => {
+    mobileMenu.classList.remove('open');
+    hamburger.classList.remove('open');
+    hamburger.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  });
+});
+
+// Close on Escape
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
+    mobileMenu.classList.remove('open');
+    hamburger.classList.remove('open');
+    hamburger.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+    hamburger.focus();
+  }
+});
+
+/* ─── Scroll-to-top ─── */
+document.getElementById('scrollTop').addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+/* ─── Intersection observer: reveal ─── */
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 70);
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+/* ─── Skill bars ─── */
+const barObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.querySelectorAll('.skill-fill').forEach(bar => {
+        setTimeout(() => { bar.style.width = bar.dataset.width + '%'; }, 350);
+      });
+      barObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.2 });
+document.querySelectorAll('.skills-layout').forEach(el => barObserver.observe(el));
+
+/* ─── Stats counter ─── */
+const statObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.querySelectorAll('.stat-num').forEach(num => {
+        const text = num.textContent;
+        const match = text.match(/^(\d+)/);
+        if (match) {
+          const target = parseInt(match[1]);
+          const suffix = text.replace(match[1], '');
+          let current = 0;
+          const step = Math.ceil(target / 40);
+          const timer = setInterval(() => {
+            current = Math.min(current + step, target);
+            num.textContent = current + suffix;
+            if (current >= target) clearInterval(timer);
+          }, 28);
+        }
+      });
+      statObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('.stat-grid').forEach(el => statObserver.observe(el));
+
+/* ─── Active nav link highlight ─── */
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+const activateLink = () => {
+  let current = '';
+  sections.forEach(sec => {
+    if (window.scrollY >= sec.offsetTop - 120) current = sec.id;
+  });
+  navLinks.forEach(a => {
+    a.style.color = a.getAttribute('href') === '#' + current ? 'var(--gold)' : '';
+  });
+};
+window.addEventListener('scroll', activateLink, { passive: true });
+</script>
+</body>
+</html>
